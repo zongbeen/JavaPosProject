@@ -98,12 +98,14 @@ public class LoginFrame extends JFrame {
 
             else if(b.getText().equals("로그인")) {
                 if(uid.equals("") || upass.equals("")) {
-                    JOptionPane.showMessageDialog(null, "아이디와 비밀번호 모두 입력해주세요", "로그인 실패", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "아이디와 비밀번호 모두 입력해주세요",
+                            "로그인 실패", JOptionPane.ERROR_MESSAGE);
                 }
 
                 else if(uid != null && upass != null) {
                     if(m1.db.logincheck(uid, upass)) {	//이 부분이 데이터베이스에 접속해 로그인 정보를 확인하는 부분이다.
                         JOptionPane.showMessageDialog(null, "로그인에 성공하였습니다");
+                        setVisible(false);
                         new OrderFrame();
 
                     } else {
