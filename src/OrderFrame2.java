@@ -98,7 +98,7 @@ public class OrderFrame2 extends JPanel {
         sbtn.setLocation(530, 480);
         add(sbtn);
 
-        //메뉴추가
+        //메뉴버튼
         for(int i=0; i<MBtn.length; i++) {
             final int index = i;
             MBtn[i].addActionListener(new ActionListener() {
