@@ -1,135 +1,175 @@
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.MouseListener;
-import java.awt.Font;
-import javax.swing.ImageIcon;
 import javax.swing.*;
-import java.util.Arrays;
+import javax.swing.table.*;
 
-public class OrderFrame2 extends JFrame {
+public class OrderFrame2 extends JPanel {
+    MenuButton MBtn[] = new MenuButton[16];
+    String menu[] = {
+            "아메리카노","ICE아메리카노","카페라떼","ICE카페라떼",
+            "카페모카","카푸치노","바닐라라떼","ICE바닐라라떼",
+            "녹차라떼","아이스티","자몽에이드","청포도에이드",
+            "딸기스무디","블루베리스무디","레몬티","유자차"};
+    int price[] = {
+            1500,1800,2500,2500,
+            3000,3000,3500,3500,
+            3500,2500,3500,3500,
+            4000,4000,3000,3000};
+    JTextField tf = new JTextField(30);
+    JButton SBtn[] = new JButton[4];
+    String Str[] = {"쿠폰","선택취소","전체취소","결제"};
+    String ColName[] = {"메뉴","수량","가격"};
+    String Data[][] ;
+    int count = 0;
+    DefaultTableModel model = new DefaultTableModel(Data,ColName);
+    JTable table = new JTable(model);
 
-    JButton[] menuBtn = new JButton[16];
-    String[] menu = {
-            "아메리카노","카페라떼","카페모카","카푸치노",
-            "바닐라라떼","딸기라떼","초코라떼","녹차라떼",
-            "아이스티","레몬에이드","자몽에이드","청포도에이드",
-            "딸기스무디","블루베리스무디","바나나스무디","초코스무디"};
-    int[] price = {
-            1500,2000,2500,2500,
-            3000,3000,3000,3000,
-            2000,2500,2500,2500,
-            4000,4000,4000,4000};
-
-    JButton orderBtn = new JButton("주문");
-    JButton backBtn = new JButton("뒤로가기");
-    JTextField totalPrice = new JTextField(30);
-
-
-    String columnNames[] = {"No.", "품명", "수량", "가격"};
-    String check[] = {};
-    Object rowdata[][] = {
-            {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""},
-            {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""},
-            {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""},
-            {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""},
-            {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""},
-            {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}
-    };
-
-    JTable table = new JTable(rowdata, columnNames);
-
-    JScrollPane scrollPane = new JScrollPane(table);
-
-
-    public OrderFrame2() {
-        choice();
-        setTitle("Menu");
-        setSize(1000, 1000);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getContentPane().setLayout(null);
-
-        scrollPane.setLocation(10, 10);
-        scrollPane.setSize(500, 500);
-
-        for(int i=0; i<menuBtn.length; i++) {
-            menuBtn[i]= new JButton(menu[i]);
-            menuBtn[0].setBounds(525, 50, 100, 80);
-            menuBtn[1].setBounds(635, 50, 100, 80);
-            menuBtn[2].setBounds(745, 50, 100, 80);
-            menuBtn[3].setBounds(855, 50, 100, 80);
-            menuBtn[4].setBounds(525, 140, 100, 80);
-            menuBtn[5].setBounds(635, 140, 100, 80);
-            menuBtn[6].setBounds(745, 140, 100, 80);
-            menuBtn[7].setBounds(855, 140, 100, 80);
-            add(menuBtn[i]);
+    class Screen extends JPanel{
+        Screen(){
+            setBackground(Color.WHITE);
+            DefaultTableModel m = (DefaultTableModel)table.getModel();
+            table.setRowHeight(30);
+            table.getTableHeader().setFont(new Font("맑은고딕", Font.BOLD, 15));
+            add(new JScrollPane(table));
         }
-
-        orderBtn.setBounds(525,700,100,80);
-        backBtn.setBounds(855, 700, 100, 80);
-        totalPrice.setBounds(10, 700, 450, 70);
-        add(totalPrice);
-
-        add(orderBtn);
-        add(backBtn);
-        add(scrollPane);
-        setVisible(true);
     }
 
-    public void choice() {
-        final int MAX = 100;
-        for(int i=0; i<menuBtn.length; i++) {
-            menuBtn[i].addMouseListener(new MouseAdapter() {
+    class MenuBtn extends JPanel{
+        MenuBtn(){
+            setLayout(new GridLayout(6,3,3,3));
+            setBackground(Color.WHITE);
+            for(int i=0;i<MBtn.length;i++) {
+                MBtn[i]= new MenuButton(menu[i]);
+                MBtn[i].setPrice(price[i]);
+                add(MBtn[i]);
+            }
+        }
+    }
+
+    class MenuButton extends JButton{
+        private int price;
+
+        public MenuButton(String a){
+            this.setText(a);
+        }
+
+        public void setPrice(int price){
+            this.price=price;
+        }
+        public int getPrice(){
+            return this.price;
+        }
+
+    }
+
+    class StrBtn extends JPanel{
+        StrBtn(){
+            setBackground(Color.WHITE);
+            setLayout(new GridLayout(1,4,3,3));
+
+            for(int i=0;i<Str.length;i++) {
+                SBtn[i]= new JButton(Str[i]);
+                add(SBtn[i]);
+            }
+        }
+    }
+
+    public OrderFrame2() {
+        setLayout(null);
+        setBackground(Color.WHITE);
+        MenuBtn mbtn = new MenuBtn();
+        StrBtn sbtn = new StrBtn();
+        Screen sc = new Screen();
+
+        //금액란
+        tf.setSize(450, 70);
+        tf.setLocation(50, 480);
+        add(tf);
+
+        sc.setSize(500, 500);
+        sc.setLocation(25, 20);
+        add(sc);
+
+        mbtn.setSize(400, 430);
+        mbtn.setLocation(530, 23);
+        add(mbtn);
+
+        sbtn.setSize(400, 70);
+        sbtn.setLocation(530, 480);
+        add(sbtn);
+
+        //메뉴추가
+        for(int i=0; i<MBtn.length; i++) {
+            final int index = i;
+            MBtn[i].addActionListener(new ActionListener() {
                 @Override
-                public void mousePressed(MouseEvent e) {
-                    for (int i = 0; i <= MAX; i++) {
-                        if (table.getValueAt(i, 0) == "") {
-                            table.setValueAt(i + 1, i, 0);
-                            table.setValueAt(menuBtn[i].getText(), i, 1);
-                            table.setValueAt(1, i, 2);
-                            table.setValueAt(2000, i, 3);
-                            break;
-                        } else if (table.getValueAt(i, 1) == menuBtn[i].getText()) {
-                            int count = (int) table.getValueAt(i, 2);
-                            table.setValueAt(count + 1, i, 2);
-                            int price = (int) table.getValueAt(i,3);
-                            table.setValueAt(price + 2000, i, 3);
+                public void actionPerformed(ActionEvent e) {
+                    int rowCont = table.getRowCount();
+                    int flag =0;
+                    MenuButton MBtn = (MenuButton) e.getSource();
+                    DefaultTableModel m = (DefaultTableModel)table.getModel();
+                    for(int i=0;i<rowCont;i++) {
+                        if(table.getValueAt(i, 0).equals(MBtn.getText())) {
+                            flag = 1;
+                            table.setValueAt((int)table.getValueAt(i,1)+1,i,1);
+                            table.setValueAt((int)table.getValueAt(i,2)+MBtn.getPrice(),i,2);
                             break;
                         }
+                    }
+                    if(flag==0) {
+                        m.addRow(new Object[]{menu[index], count + 1, price[index]});
                     }
                 }
             });
         }
 
-        /*orderBtn.addActionListener(new ActionListener() {
+        //쿠폰
+        SBtn[0].addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                JButton orderBtn = (JButton)e.getSource();
+                JButton MBtn = (JButton)e.getSource();
+                table.setValueAt(0, table.getSelectedRow(), 2);
+            }
+        });
+
+        //선택취소
+        SBtn[1].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton MBtn = (JButton)e.getSource();
+                DefaultTableModel m = (DefaultTableModel)table.getModel();
+
+                m.removeRow(table.getSelectedRow());
+            }
+        });
+
+
+        //전체취소
+        SBtn[2].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton MBtn = (JButton)e.getSource();
+                DefaultTableModel m = (DefaultTableModel)table.getModel();
+
+                m.setRowCount(0);
+                tf.setText(String.valueOf(""));
+            }
+        });
+
+        //결제버튼
+        SBtn[3].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton MBtn = (JButton)e.getSource();
                 int rowCont = table.getRowCount();
                 int sum =0;
                 for(int i=0;i<rowCont;i++) {
                     sum += (int)table.getValueAt(i, 2);
                 }
-                totalPrice.setText(String.valueOf(" 총 금액 : "+sum));
-                totalPrice.setFont(new Font("Gothic", Font.BOLD, 40));
-            }
-        });*/
-
-        /*orderBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                setVisible(false);
-                new OrderFrame();
-            }
-        });*/
-
-        backBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                setVisible(false);
-                new OrderFrame();
+                tf.setText(String.valueOf(" 총 금액 : " + sum + "원"));
+                tf.setHorizontalAlignment(JLabel.CENTER);
+                tf.setFont(new Font("GOTHIC", Font.BOLD, 25));
             }
         });
-
     }
 }

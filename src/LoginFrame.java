@@ -22,10 +22,11 @@ public class LoginFrame extends JFrame {
     MainFrame m1 = null;
 
     LoginFrame(MainFrame m2){
+        int x=85, y=70;
         m1 = m2;
 
         setTitle("로그인");
-        setSize(1000, 1000);
+        setSize(500, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -34,17 +35,23 @@ public class LoginFrame extends JFrame {
 
         id.setPreferredSize(new Dimension(170, 30));
         pw.setPreferredSize(new Dimension(170, 30));
+        pw.addKeyListener(new LoginListener());
 
-        LoginBtn.setPreferredSize(new Dimension(75, 70));
+        LoginBtn.setPreferredSize(new Dimension(75, 68));
         JoinBtn.setPreferredSize(new Dimension(135, 30));
         ExitBtn.setPreferredSize(new Dimension(135, 30));
 
         setContentPane(MainPanel);
         MainPanel.setLayout(null);
+        MainPanel.setBackground(Color.WHITE);
 
-        InfoPanel.setBounds(350,350,250,70);
-        LoginPanel.setBounds(620,350,75,70);
-        LastPanel.setBounds(400,425,280,40);
+        InfoPanel.setBounds(x,y,250,70);
+        LoginPanel.setBounds(x+260,y,75,70);
+        LastPanel.setBounds(x+30,y+75,280,40);
+        InfoPanel.setBackground(Color.WHITE);
+        LoginPanel.setBackground(Color.WHITE);
+        LastPanel.setBackground(Color.WHITE);
+
 
         InfoPanel.add(idLabel); InfoPanel.add(id);
         InfoPanel.add(pwLabel); InfoPanel.add(pw);
@@ -62,57 +69,58 @@ public class LoginFrame extends JFrame {
         ExitBtn.addActionListener(bl);
         JoinBtn.addActionListener(bl);
 
+        setVisible(true);
+        setResizable(false);
 
         ExitBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("rjr");
+
+                System.exit(1);
             }
         });
-        setVisible(true);
-        setResizable(false);
 
     }
+    class LoginListener extends KeyAdapter{
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if(e.getKeyCode()==KeyEvent.VK_ENTER)
+            new PressLogin().PressLogins();
+            }
+    }
 
-    /* Button 이벤트 리스너 */
     class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JButton b = (JButton)e.getSource();
+            new PressLogin().PressLogins();
+        }
+    }
 
-            /* TextField에 입력된 아이디와 비밀번호를 변수에 초기화 */
+    class PressLogin {
+        public void PressLogins() {
             String uid = id.getText();
             String upass = "";
             for(int i=0; i<pw.getPassword().length; i++) {
                 upass = upass + pw.getPassword()[i];
             }
 
-            if(b.getText().equals("프로그램 종료")) {
-                System.out.println("프로그램 종료");
-                System.exit(0);
+            if(uid.equals("") || upass.equals("")) {
+                JOptionPane.showMessageDialog(null, "아이디와 비밀번호 모두 입력해주세요",
+                        "로그인 실패", JOptionPane.ERROR_MESSAGE);
             }
 
-            /*else if(b.getText().equals("회원가입")) {
+            else if(uid != null && upass != null) {
+                if(m1.db.logincheck(uid, upass)) {	//이 부분이 데이터베이스에 접속해 로그인 정보를 확인하는 부분이다.
+                    JOptionPane.showMessageDialog(null, "로그인에 성공하였습니다");
+                    setVisible(false);
+                    new OrderFrame();
 
-            }*/
-
-            else if(b.getText().equals("로그인")) {
-                if(uid.equals("") || upass.equals("")) {
-                    JOptionPane.showMessageDialog(null, "아이디와 비밀번호 모두 입력해주세요",
-                            "로그인 실패", JOptionPane.ERROR_MESSAGE);
                 }
-
-                else if(uid != null && upass != null) {
-                    if(m1.db.logincheck(uid, upass)) {	//이 부분이 데이터베이스에 접속해 로그인 정보를 확인하는 부분이다.
-                        JOptionPane.showMessageDialog(null, "로그인에 성공하였습니다");
-                        setVisible(false);
-                        new OrderFrame();
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, "로그인에 실패하였습니다");
-                    }
+                else {
+                    JOptionPane.showMessageDialog(null, "로그인에 실패하였습니다");
                 }
             }
         }
+
     }
 }

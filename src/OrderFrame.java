@@ -5,8 +5,8 @@ import javax.swing.*;
 
 
 public class OrderFrame extends JFrame {
-    JButton button1 = new JButton("1");
-    JButton button2 = new JButton("2");
+    JButton button1 = new JButton("주문");
+    JButton button2 = new JButton("매출 조회");
     JButton button3 = new JButton("3");
     JButton button4 = new JButton("4");
     JButton button5 = new JButton("5");
@@ -17,6 +17,7 @@ public class OrderFrame extends JFrame {
     OrderFrame() {
         next();
         setTitle("OrderFrame");
+        setBackground(Color.WHITE);
         setSize(1000,1000);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +46,7 @@ public class OrderFrame extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 setVisible(false);
-                new OrderFrame2();
+                new PosFrame();
             }
         });
         button2.addMouseListener(new MouseAdapter() {
